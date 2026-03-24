@@ -2,9 +2,9 @@
 
 > **Connect Claude to your YouTube channel.** Read analytics, fetch full video metadata (including unlisted/private/draft), search your uploads, and update titles/descriptions/tags — all from Claude Desktop, Claude Code, or any MCP client.
 
-[![npm version](https://img.shields.io/npm/v/youtube-mcp-server?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/youtube-mcp-server)
-[![npm downloads](https://img.shields.io/npm/dm/youtube-mcp-server?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/youtube-mcp-server)
-[![GitHub Stars](https://img.shields.io/github/stars/adityaarsharma/youtube-mcp-server?style=for-the-badge&logo=github)](https://github.com/adityaarsharma/youtube-mcp-server)
+[![npm version](https://img.shields.io/npm/v/youtube-studio-mcp?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/youtube-studio-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/youtube-studio-mcp?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/youtube-studio-mcp)
+[![GitHub Stars](https://img.shields.io/github/stars/adityaarsharma/youtube-studio-mcp?style=for-the-badge&logo=github)](https://github.com/adityaarsharma/youtube-studio-mcp)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Claude MCP](https://img.shields.io/badge/Claude-MCP%20Server-FF6B35?style=for-the-badge&logo=anthropic)](https://claude.ai)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-43853D?style=for-the-badge&logo=node.js)](https://nodejs.org)
@@ -62,20 +62,20 @@ Claude  →  YouTube MCP Server  →  YouTube APIs  →  Your Channel Data
 ### Option A: npx (Zero Install — just run it)
 
 ```bash
-npx youtube-mcp-server
+npx youtube-studio-mcp
 ```
 
 ### Option B: Global Install
 
 ```bash
-npm install -g youtube-mcp-server
+npm install -g youtube-studio-mcp
 ```
 
 ### Option C: Clone + Run
 
 ```bash
-git clone https://github.com/adityaarsharma/youtube-mcp-server.git
-cd youtube-mcp-server
+git clone https://github.com/adityaarsharma/youtube-studio-mcp.git
+cd youtube-studio-mcp
 npm install
 ```
 
@@ -133,7 +133,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or 
   "mcpServers": {
     "youtube-analytics": {
       "command": "node",
-      "args": ["/full/path/to/youtube-mcp-server/server.js"]
+      "args": ["/full/path/to/youtube-studio-mcp/server.js"]
     }
   }
 }
@@ -146,7 +146,7 @@ Or if installed via npm:
   "mcpServers": {
     "youtube-analytics": {
       "command": "npx",
-      "args": ["-y", "youtube-mcp-server"]
+      "args": ["-y", "youtube-studio-mcp"]
     }
   }
 }
@@ -155,7 +155,7 @@ Or if installed via npm:
 #### Claude Code (Terminal)
 
 ```bash
-claude mcp add youtube-analytics node /full/path/to/youtube-mcp-server/server.js
+claude mcp add youtube-analytics node /full/path/to/youtube-studio-mcp/server.js
 ```
 
 #### VS Code
@@ -167,7 +167,7 @@ Add to `.vscode/settings.json`:
   "mcp.servers": {
     "youtube-analytics": {
       "command": "npx",
-      "args": ["-y", "youtube-mcp-server"]
+      "args": ["-y", "youtube-studio-mcp"]
     }
   }
 }
@@ -307,7 +307,7 @@ cp skills/youtube-*.md ~/.claude/skills/
 
 ## What's New in v2.1
 
-- **npm package** — `npx youtube-mcp-server` for zero-install
+- **npm package** — `npx youtube-studio-mcp` for zero-install
 - **8 AI skills** — bundled YouTube workflow skills for Claude
 - **MIT License** — free to use, modify, share
 
@@ -325,7 +325,7 @@ cp skills/youtube-*.md ~/.claude/skills/
 ## Files
 
 ```
-youtube-mcp-server/
+youtube-studio-mcp/
 ├── server.js          ← MCP server (10 tools)
 ├── auth.js            ← Run once to link YouTube account
 ├── package.json       ← Dependencies + npm config
