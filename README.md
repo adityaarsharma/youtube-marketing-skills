@@ -257,6 +257,54 @@ PRs welcome! Ideas:
 
 ---
 
+## Bonus: 7 AI Skills for YouTube Creators
+
+This repo includes **ready-to-use AI skill files** in the `skills/` folder that supercharge your YouTube workflow. Each skill is a structured prompt that makes Claude act as a specialized team member.
+
+**Install any skill:** Copy the `.md` file into your Claude skills directory and it activates automatically.
+
+| Skill | What It Does | Trigger Phrases |
+|-------|-------------|-----------------|
+| **[youtube-seo-optimizer](skills/youtube-seo-optimizer.md)** | Optimizes titles, descriptions, tags. Protects existing ranking keywords. 3 title options + full description + 20 tags | "optimize this video", "write title", "write tags" |
+| **[youtube-channel-audit](skills/youtube-channel-audit.md)** | Full channel health report — views, subs, retention, traffic sources, audience demographics. Identifies problems and prescribes fixes | "audit my channel", "why am I not growing", "channel report" |
+| **[youtube-topic-finder](skills/youtube-topic-finder.md)** | 12 data-backed video topics with keyword volumes, SERP gaps, and competitor analysis. Tier 1/2/3 prioritization | "video ideas", "what should I make next", "find topics" |
+| **[youtube-thumbnail-auditor](skills/youtube-thumbnail-auditor.md)** | 20-point thumbnail scoring (66-point scale). Grades A-F with specific redesign instructions | "audit thumbnail", "review this thumbnail", "CTR is low" |
+| **[youtube-script-writer](skills/youtube-script-writer.md)** | Full production-ready scripts with word-for-word narration, screen cues, timestamps, editor brief, and companion Short script | "write script", "video script", "tutorial script" |
+| **[youtube-competitor-spy](skills/youtube-competitor-spy.md)** | Competitor channel analysis, SERP battle maps, 10 "steal-worthy" topics with differentiation angles | "competitor analysis", "who's beating me", "content gaps" |
+| **[youtube-video-analyzer](skills/youtube-video-analyzer.md)** | Deep single-video analysis — SEO score (21-point), performance benchmarks, and optimized rewrite | "analyze this video", "why isn't this performing", "video audit" |
+| **[youtube-shorts-repurposer](skills/youtube-shorts-repurposer.md)** | Turn any long-form video into 3-5 Shorts with hooks, text overlays, and posting strategy | "make shorts from this", "repurpose video", "extract shorts" |
+
+### How the Skills + MCP Work Together
+
+```
+You: "Optimize this video: youtube.com/watch?v=abc123"
+
+Claude:
+  1. youtube-seo-optimizer skill activates
+  2. Calls get_video_details → pulls current title, description, tags
+  3. Checks YouTube SERP for current rankings
+  4. Lists PROTECTED keywords (won't remove)
+  5. Writes 3 new title options + full description + 20 tags
+  6. Can call update_video_seo to apply changes directly
+```
+
+The skills tell Claude **what to do**. The MCP tools give Claude **access to your data**. Together they create a complete YouTube AI workflow.
+
+### Install Skills
+
+**Claude Desktop / Claude Code:**
+```bash
+# Copy a skill to your Claude skills directory
+cp skills/youtube-seo-optimizer.md ~/.claude/skills/
+```
+
+**Or install all 7:**
+```bash
+cp skills/youtube-*.md ~/.claude/skills/
+```
+
+---
+
 ## License
 
 MIT — free to use, modify, share.
