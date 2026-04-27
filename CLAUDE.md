@@ -3,7 +3,7 @@
 ## Architecture
 
 ```
-youtube-mcp-server/
+youtube-marketing-skills/
 ├── .claude-plugin                    # Plugin manifest
 ├── CLAUDE.md                         # Project instructions (this file)
 ├── README.md                         # Setup + full command reference

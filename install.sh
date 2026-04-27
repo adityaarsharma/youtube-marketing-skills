@@ -1,10 +1,10 @@
 #!/bin/bash
 # YouTube Marketing Skills — Install Script
-# Usage: curl -fsSL https://raw.githubusercontent.com/adityaarsharma/youtube-mcp-server/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/adityaarsharma/youtube-marketing-skills/main/install.sh | bash
 
 set -e
 
-REPO="adityaarsharma/youtube-mcp-server"
+REPO="adityaarsharma/youtube-marketing-skills"
 INSTALL_DIR="$HOME/.claude/skills/youtube-marketing"
 CLAUDE_SETTINGS="$HOME/.claude/settings.json"
 

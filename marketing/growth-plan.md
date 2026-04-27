@@ -1,9 +1,9 @@
 # YouTube MCP Server — Growth Plan
 
 ## Current State (March 24, 2026)
-- GitHub: https://github.com/adityaarsharma/youtube-mcp-server (2 stars)
+- GitHub: https://github.com/adityaarsharma/youtube-marketing-skills (2 stars)
 - npm: youtube-channel-mcp + youtube-studio-mcp (both published)
-- #1 competitor: ZubeidHendricks/youtube-mcp-server (463 stars)
+- #1 competitor: ZubeidHendricks/youtube-marketing-skills (463 stars)
 - Unique advantage: Only MCP with analytics + SEO write + 8 bundled AI skills
 
 ---
@@ -44,7 +44,7 @@ The repo includes ready-to-use skill files that turn Claude into your YouTube te
 npx youtube-channel-mcp
 ```
 
-GitHub: https://github.com/adityaarsharma/youtube-mcp-server
+GitHub: https://github.com/adityaarsharma/youtube-marketing-skills
 
 Free, MIT licensed. Would love feedback — especially if you run a YouTube channel and want to test it!
 
@@ -67,7 +67,7 @@ So I built a free tool that connects Claude AI directly to your YouTube channel.
 
 It also comes with 8 AI "skill" files that make Claude act like a YouTube team — SEO optimizer, topic finder, thumbnail auditor, script writer, etc.
 
-**It's free and open source:** https://github.com/adityaarsharma/youtube-mcp-server
+**It's free and open source:** https://github.com/adityaarsharma/youtube-marketing-skills
 
 Install: `npx youtube-channel-mcp`
 
@@ -92,7 +92,7 @@ It connects Claude AI to your YouTube channel so you can ask things like:
 
 It also includes AI "skills" for thumbnail auditing (scores your thumbnail on a 66-point scale), script writing, and competitor analysis.
 
-**Free, open source, runs on your computer:** https://github.com/adityaarsharma/youtube-mcp-server
+**Free, open source, runs on your computer:** https://github.com/adityaarsharma/youtube-marketing-skills
 
 Would love feedback from fellow small creators!
 
@@ -142,7 +142,7 @@ Install in 1 command:
 
 npx youtube-channel-mcp
 
-GitHub: github.com/adityaarsharma/youtube-mcp-server
+GitHub: github.com/adityaarsharma/youtube-marketing-skills
 
 MIT licensed. Free forever.
 

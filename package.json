@@ -31,12 +31,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adityaarsharma/youtube-mcp-server.git"
+    "url": "git+https://github.com/adityaarsharma/youtube-marketing-skills.git"
   },
   "bugs": {
-    "url": "https://github.com/adityaarsharma/youtube-mcp-server/issues"
+    "url": "https://github.com/adityaarsharma/youtube-marketing-skills/issues"
   },
-  "homepage": "https://github.com/adityaarsharma/youtube-mcp-server#readme",
+  "homepage": "https://github.com/adityaarsharma/youtube-marketing-skills#readme",
   "engines": {
     "node": ">=18.0.0"
   },

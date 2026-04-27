@@ -157,7 +157,7 @@ The research foundation in `references/whitepapers.md` is the backbone — if yo
 
 ---
 
-**Repo:** [github.com/adityaarsharma/youtube-mcp-server](https://github.com/adityaarsharma/youtube-mcp-server)
+**Repo:** [github.com/adityaarsharma/youtube-marketing-skills](https://github.com/adityaarsharma/youtube-marketing-skills)
 
 *Built by [Aditya Sharma](https://adityaarsharma.com) — open source under MIT.*  
 *The only YouTube tool that knows you're selling something.*
