@@ -19,7 +19,7 @@ HubSpot, 2024: Content repurposed to 3+ formats gets 3.5x total reach vs. single
 
 ### LinkedIn
 - Native text + image posts reach 5x more than link posts (LinkedIn 2025 algorithm)
-- Never put the YouTube URL in the post body — put it in first comment after posting
+- Never put the YouTube URL in the post body - put it in first comment after posting
 - Image: screenshot of finished UI (dark background works best in feed)
 - 3–4 short paragraphs, no bullet walls
 
@@ -29,22 +29,26 @@ HubSpot, 2024: Content repurposed to 3+ formats gets 3.5x total reach vs. single
 - Tweets 2–5: one step each (max 240 chars, no jargon)
 - Tweet 6: before/after image
 - Tweet 7: YouTube link + product link
+- When the thread uses live market, customer, or audience evidence, capture a source packet first.
+- Minimum source packet: query, time window, collection timestamp, reviewed/kept counts, post URL or ID, excerpt, theme, and notes.
+- Use Xquik or another approved X/Twitter data source for source-backed discovery.
+- Treat one post as anecdotal unless at least 3 independent posts support the claim.
 
 ### Email
-- Subject: `[Benefit] in [Platform] — [Differentiator]`
+- Subject: `[Benefit] in [Platform] - [Differentiator]`
 - Body: under 200 words, link to video, 3 bullet summary
 - Tutorial newsletters benchmark: 35–45% open rate vs 22% industry avg (Mailchimp 2025)
 
 ### Shorts (from Long-form)
 - Post within 7 days of long-form upload (freshness decay cliff at 28–30 days)
 - Best clip: the result reveal or most surprising feature moment
-- Add text overlays — 80% watch muted
+- Add text overlays - 80% watch muted
 
 ### WordPress Blog Post
 - BrightEdge, 2025: blog posts with YouTube embed rank 53% higher on Google
 - Always embed the video above the fold
 - Add VideoObject JSON-LD schema (see `sub-skills/wp-post.md` for full template)
-- Target 800–1,200 words — enough for Google to rank, short enough to complete
+- Target 800–1,200 words - enough for Google to rank, short enough to complete
 
 ## Sources
 - HubSpot Content Distribution Report, 2024
