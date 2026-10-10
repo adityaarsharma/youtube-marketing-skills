@@ -7,6 +7,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/adityaarsharma/youtube-marketing-skills?style=for-the-badge&logo=github)](https://github.com/adityaarsharma/youtube-marketing-skills)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-43853D?style=for-the-badge&logo=node.js)](https://nodejs.org)
+[![Leave a tip](https://img.shields.io/badge/Leave%20a%20tip-Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/adityaarsharma)
 
 21 commands · 10 live channel tools · Works with Claude Code, Cursor, Codex, Gemini CLI · MIT
 
