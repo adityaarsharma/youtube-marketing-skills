@@ -15,10 +15,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
 import open from "open";
+import { parseOptions, startHttpServer } from "./http-transport.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const TOKEN_PATH = path.join(__dirname, "tokens.json");
-const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
+const TOKEN_PATH = process.env.YOUTUBE_TOKEN_PATH || path.join(__dirname, "tokens.json");
+const CREDENTIALS_PATH = process.env.YOUTUBE_CREDENTIALS_PATH || path.join(__dirname, "credentials.json");
 
 // ─── OAuth Setup ─────────────────────────────────────────────────────────────
 function getOAuth2Client() {
@@ -32,7 +33,7 @@ function getOAuth2Client() {
   return new OAuth2Client(client_id, client_secret, redirect_uris[0]);
 }
 
-async function authorize() {
+async function authorize(allowInteractiveAuth = true) {
   const auth = getOAuth2Client();
   if (fs.existsSync(TOKEN_PATH)) {
     const tokens = JSON.parse(fs.readFileSync(TOKEN_PATH));
@@ -50,6 +51,7 @@ async function authorize() {
     });
     return auth;
   }
+  if (!allowInteractiveAuth) throw new Error("YouTube login required: run node auth.js before starting HTTP mode");
   return await getNewToken(auth);
 }
 
@@ -629,6 +631,7 @@ function getDateDaysAgo(days) {
 }
 
 // ─── MCP Server ───────────────────────────────────────────────────────────────
+function createServer({ allowInteractiveAuth = true } = {}) {
 const server = new Server(
   { name: "youtube-analytics", version: "2.3.0" },
   { capabilities: { tools: {} } }
@@ -812,7 +815,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
-    const auth = await authorize();
+    const auth = await authorize(allowInteractiveAuth);
     let result;
     switch (name) {
       // ── Video Metadata ──────────────────────────────────────────────────────
@@ -902,15 +905,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// ─── Process-level crash guards ───────────────────────────────────────────────
-process.on("uncaughtException", (err) => {
-  console.error("[YouTube MCP] Uncaught exception (process kept alive):", err.message);
-});
-process.on("unhandledRejection", (reason) => {
-  console.error("[YouTube MCP] Unhandled rejection (process kept alive):", reason);
-});
+return server;
+}
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.error("YouTube MCP Server v2.3.0 running — analytics + video metadata ready...");
+try {
+  const options = parseOptions();
+  if (options.transport === "http") {
+    const service = await startHttpServer(() => createServer({ allowInteractiveAuth: false }), options);
+    console.error(`YouTube MCP HTTP listening at ${service.url}`);
+    let stopping = false;
+    const stop = async () => {
+      if (stopping) return;
+      stopping = true;
+      await service.close();
+    };
+    process.once("SIGINT", stop);
+    process.once("SIGTERM", stop);
+  } else {
+    await createServer().connect(new StdioServerTransport());
+    console.error("YouTube MCP Server v2.3.0 running — analytics + video metadata ready...");
+  }
+} catch (error) {
+  console.error("YouTube MCP startup failed:", error.message);
+  process.exitCode = 1;
+}

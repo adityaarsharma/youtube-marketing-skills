@@ -7,8 +7,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const TOKEN_PATH = path.join(__dirname, "tokens.json");
-const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
+const TOKEN_PATH = process.env.YOUTUBE_TOKEN_PATH || path.join(__dirname, "tokens.json");
+const CREDENTIALS_PATH = process.env.YOUTUBE_CREDENTIALS_PATH || path.join(__dirname, "credentials.json");
 
 const SCOPES = [
   "https://www.googleapis.com/auth/youtube.readonly",
