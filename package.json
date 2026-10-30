@@ -1,7 +1,7 @@
 {
   "name": "youtube-channel-mcp",
   "version": "2.3.0",
-  "description": "MCP server for YouTube \u2014 analytics, video metadata, SEO updates. Read your private channel data and update titles/descriptions/tags directly from Claude. OAuth2, 10 tools, works with Claude Desktop + Claude Code.",
+  "description": "MCP server for YouTube — analytics, video metadata, SEO updates. Read your private channel data and update titles/descriptions/tags directly from Claude. OAuth2, 10 tools, works with Claude Desktop + Claude Code.",
   "type": "module",
   "bin": {
     "youtube-studio-mcp": "server.js"
@@ -9,7 +9,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "auth": "node auth.js"
+    "auth": "node auth.js",
+    "test": "node --test",
+    "start:http": "node server.js --transport http"
   },
   "keywords": [
     "mcp",
@@ -38,19 +40,20 @@
   },
   "homepage": "https://github.com/adityaarsharma/youtube-marketing-skills#readme",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.19.1"
   },
   "files": [
     "server.js",
     "auth.js",
     "skills/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "http-transport.js"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "express": "^4.18.0",
     "googleapis": "^140.0.0",
-    "open": "^10.1.0",
-    "express": "^4.18.0"
+    "open": "^10.1.0"
   }
 }

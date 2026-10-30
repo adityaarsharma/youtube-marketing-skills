@@ -12,7 +12,7 @@ youtube-marketing-skills/
 ├── LICENSE                           # MIT
 ├── install.sh                        # One-command install (Unix)
 ├── install.ps1                       # One-command install (Windows)
-├── server.js                         # MCP server (local stdio + remote HTTP/SSE)
+├── server.js                         # MCP server (local stdio + shared Streamable HTTP)
 ├── auth.js                           # OAuth2 setup for YouTube API
 ├── package.json
 ├── skills/
@@ -85,6 +85,6 @@ youtube-marketing-skills/
 
 The `server.js` MCP server runs in two modes:
 - **Local (stdio)**: Default mode, used with Claude Code and other local MCP clients
-- **Remote (HTTP/SSE)**: `MODE=remote PORT=3001 node server.js` — for team access
+- **Shared local HTTP**: `node server.js --transport http --port 3001` — loopback-only Streamable HTTP for multiple clients
 
 All 11 MCP tools enforce YouTube's content policies before any write operation.

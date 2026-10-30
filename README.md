@@ -54,7 +54,7 @@ One subscriber from your niche is worth more than 10,000 random views. This tool
 
 Full guide: [INSTALL.md](INSTALL.md).
 
-**Requirements:** Node.js 18+, Google Cloud project with YouTube Data API v3 + YouTube Analytics API enabled, OAuth 2.0 Desktop credentials.
+**Requirements:** Node.js 18.19.1+, Google Cloud project with YouTube Data API v3 + YouTube Analytics API enabled, OAuth 2.0 Desktop credentials.
 
 ```bash
 # 1. Clone + install
@@ -289,7 +289,7 @@ Roadmap details: [`marketing/integration-roadmap.md`](marketing/integration-road
 | Windsurf | Live channel tools via MCP |
 | OpenAI Codex | Skill files |
 | Gemini CLI | Skill files |
-| Any MCP client | Remote HTTP/SSE |
+| Any compatible MCP client | Local Streamable HTTP |
 
 ---
 
@@ -362,7 +362,7 @@ Yes — with Mode 2 (Hosted MCP) or Mode 3 (Local MCP), your agent connects to y
 
 ### Do I need to install Node.js?
 
-Yes — Node.js 18+ runs the MCP server that connects to your live YouTube data and pushes SEO updates back. That's how all 21 commands actually work against your real channel.
+Yes — Node.js 18.19.1+ runs the MCP server that connects to your live YouTube data and pushes SEO updates back. That's how all 21 commands actually work against your real channel.
 
 A hosted, no-install version is coming soon for users who don't want to set up Node + Google Cloud locally.
 
@@ -399,3 +399,52 @@ MIT — [Aditya Sharma](https://adityaarsharma.com)
 ---
 
 *Built for channels where one subscriber is worth more than ten thousand ad views.*
+
+## Share one local MCP process across chats
+
+By default, `node server.js` still uses stdio. To avoid starting a Node process
+for every chat, authenticate once with `node auth.js`, then run:
+
+```sh
+node server.js --transport http --host 127.0.0.1 --port 3001
+```
+
+Point each client at `http://127.0.0.1:3001/mcp` using **Streamable HTTP**.
+For example, in Codex's `config.toml`:
+
+```toml
+[mcp_servers.youtube-studio]
+url = "http://127.0.0.1:3001/mcp"
+```
+
+Remove `command` and `args` from that entry. Keep any existing tool approval
+settings. Run the server once with your service manager; do not launch it
+separately from each chat. Existing stdio connections can finish before they
+are retired; only new connections need to use the HTTP URL.
+
+HTTP mode is **local only**: the host must be `127.0.0.1`, `::1`, or `localhost`.
+It rejects browser Origin headers and untrusted Host headers and does not enable
+CORS. It has no remote authentication and must not be exposed through a public
+reverse proxy. Local processes running as other users may reach the service;
+use it only on a trusted machine. `GET /health` provides a readiness check.
+
+Requests use stateless MCP transports in the same process, with no per-chat
+child processes or persistent session registry. Closing one client does not
+close the server or another client's connection. Only POST is supported at
+`/mcp`; GET and DELETE return 405. SIGINT/SIGTERM close transports and sockets;
+in-flight requests may be interrupted, so stop the service when clients are idle.
+Request bodies are limited to 1 MiB.
+
+For service installations, both `server.js` and `auth.js` accept:
+
+- `YOUTUBE_CREDENTIALS_PATH`: OAuth client JSON path (default: `credentials.json` beside the script).
+- `YOUTUBE_TOKEN_PATH`: OAuth token JSON path (default: `tokens.json` beside the script).
+
+Set the same paths when authenticating and running the service. Keep them out
+of Git and restrict file permissions. HTTP tool calls never open an interactive
+login browser: missing tokens produce a tool error directing you to `auth.js`.
+The service continues to use your existing YouTube account and tool semantics.
+
+Run `npm test` to verify stdio compatibility, concurrent HTTP clients, local
+request validation, and noninteractive authentication behavior. Tests do not
+require Google credentials or call YouTube.

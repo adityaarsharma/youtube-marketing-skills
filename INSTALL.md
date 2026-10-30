@@ -208,15 +208,18 @@ If it returns a channel health audit with your real numbers, you're set.
 
 ---
 
-## Remote Mode — Share With a Team
+## Shared Local HTTP Mode
 
-To run the MCP on a shared host so multiple machines use one channel:
+To let multiple chats on the same trusted machine share one process:
 
 ```bash
-MODE=remote PORT=3001 node server.js
+node server.js --transport http --host 127.0.0.1 --port 3001
 ```
 
-Point each client's MCP config at the HTTP/SSE endpoint instead of `command + args`.
+Point each client's Streamable HTTP MCP config at `http://127.0.0.1:3001/mcp`
+instead of `command + args`. Authenticate first with `node auth.js`. This mode
+is loopback-only, not a remote team service; see README for security and
+credential-path configuration.
 
 ---
 
