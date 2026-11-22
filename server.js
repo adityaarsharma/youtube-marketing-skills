@@ -118,15 +118,19 @@ async function getChannelStats(auth) {
   };
 }
 
+// Extract canonical 11-char YouTube video ID from watch, youtu.be, shorts, live, embed, v URLs or bare ID
+export function extractVideoId(videoId) {
+  const raw = String(videoId || "").trim();
+  const idMatch = raw.match(
+    /(?:youtube\.com\/(?:watch\?(?:[^#\s]*&)?v=|shorts\/|live\/|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  );
+  return idMatch ? idMatch[1] : raw;
+}
+
 // Get full video details by ID — works for public, unlisted, private, and draft
 async function getVideoDetails(auth, videoId) {
   const youtube = google.youtube({ version: "v3", auth });
-
-  // Extract video ID from URL if full URL is passed
-  const idMatch = videoId.match(
-    /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-  );
-  const cleanId = idMatch ? idMatch[1] : videoId.trim();
+  const cleanId = extractVideoId(videoId);
 
   const res = await youtube.videos.list({
     part: ["snippet", "statistics", "contentDetails", "status", "localizations"],
@@ -360,7 +364,7 @@ async function uploadVideo(auth, videoPath, metadata) {
 //   Title policy:       https://support.google.com/youtube/answer/57421
 //   Spam/misleading:    https://support.google.com/youtube/answer/2801973
 //   Metadata policy:    https://support.google.com/youtube/answer/6162278
-function validateYouTubeMetadata(updates) {
+export function validateYouTubeMetadata(updates) {
   const errors = [];
   const warnings = [];
 
@@ -409,13 +413,14 @@ function validateYouTubeMetadata(updates) {
   if (updates.description) {
     const d = updates.description;
 
-    if (d.length > 5000)
-      errors.push(`BLOCKED: Description too long (${d.length} chars). YouTube hard limit is 5000 chars.`);
+    const descBytes = Buffer.byteLength(d, "utf8");
+    if (descBytes > 5000)
+      errors.push(`BLOCKED: Description too long (${descBytes} UTF-8 bytes / ${d.length} chars). YouTube hard limit is 5000 UTF-8 bytes.`);
 
-    // Keyword stuffing: any word (>3 chars) repeated 8+ times
+    // Keyword stuffing: any Unicode word (>3 chars) repeated 8+ times
     const wordFreq = {};
     d.toLowerCase().split(/\s+/).forEach((w) => {
-      const clean = w.replace(/[^a-z]/g, "");
+      const clean = w.replace(/[^\p{L}\p{N}]/gu, "");
       if (clean.length > 3) wordFreq[clean] = (wordFreq[clean] || 0) + 1;
     });
     const stuffed = Object.entries(wordFreq).find(([, c]) => c >= 8);
@@ -437,9 +442,13 @@ function validateYouTubeMetadata(updates) {
       if (longTags.length > 0)
         errors.push(`BLOCKED: ${longTags.length} tag(s) exceed 30-char YouTube limit: ${longTags.slice(0, 3).map((t) => `"${t}"`).join(", ")}.`);
 
-      const totalChars = updates.tags.reduce((sum, t) => sum + t.length, 0);
+      // YouTube counts commas plus enclosing quotes on multi-word tags toward the 500-char limit
+      const totalChars = updates.tags.reduce(
+        (sum, t, idx) => sum + (idx > 0 ? 1 : 0) + (t.includes(" ") ? t.length + 2 : t.length),
+        0
+      );
       if (totalChars > 500)
-        errors.push(`BLOCKED: Total tag length (${totalChars} chars) exceeds YouTube's 500-char limit. Remove some tags.`);
+        errors.push(`BLOCKED: Total tag length (${totalChars} chars incl. commas/quotes) exceeds YouTube's 500-char limit. Remove some tags.`);
 
       if (updates.tags.length > 30)
         errors.push(`BLOCKED: Too many tags (${updates.tags.length}). YouTube's effective limit is 30 tags.`);
@@ -499,18 +508,32 @@ async function updateVideoSEO(auth, videoId, updates) {
 
 async function getVideos(auth, maxResults = 50, order = "date") {
   const youtube = google.youtube({ version: "v3", auth });
-  const chRes = await youtube.channels.list({ part: ["id"], mine: true });
-  const channelId = chRes.data.items?.[0]?.id;
+  const chRes = await youtube.channels.list({ part: ["id", "contentDetails"], mine: true });
+  const ch = chRes.data.items?.[0];
+  const channelId = ch?.id;
+  const uploadsPlaylistId = ch?.contentDetails?.relatedPlaylists?.uploads;
 
-  const res = await youtube.search.list({
-    part: ["id", "snippet"],
-    channelId,
-    maxResults,
-    order,
-    type: ["video"],
-  });
-
-  const videoIds = res.data.items.map((i) => i.id.videoId).filter(Boolean);
+  let videoIds = [];
+  if (uploadsPlaylistId) {
+    // Use uploads playlist (1 quota unit per 50 videos vs 100 units for search.list)
+    const plRes = await youtube.playlistItems.list({
+      part: ["contentDetails"],
+      playlistId: uploadsPlaylistId,
+      maxResults: Math.min(maxResults, 50),
+    });
+    videoIds = (plRes.data.items || [])
+      .map((i) => i.contentDetails?.videoId)
+      .filter(Boolean);
+  } else {
+    const res = await youtube.search.list({
+      part: ["id", "snippet"],
+      channelId,
+      maxResults,
+      order,
+      type: ["video"],
+    });
+    videoIds = (res.data.items || []).map((i) => i.id.videoId).filter(Boolean);
+  }
   if (!videoIds.length) return [];
 
   const statsRes = await youtube.videos.list({
@@ -518,7 +541,7 @@ async function getVideos(auth, maxResults = 50, order = "date") {
     id: videoIds,
   });
 
-  return statsRes.data.items.map((v) => ({
+  const mapped = (statsRes.data.items || []).map((v) => ({
     id: v.id,
     url: `https://www.youtube.com/watch?v=${v.id}`,
     title: v.snippet.title,
@@ -532,6 +555,13 @@ async function getVideos(auth, maxResults = 50, order = "date") {
     commentCount: parseInt(v.statistics.commentCount || 0),
     thumbnail: v.snippet.thumbnails?.medium?.url,
   }));
+
+  if (order === "viewCount") {
+    mapped.sort((a, b) => b.viewCount - a.viewCount);
+  } else if (order === "rating") {
+    mapped.sort((a, b) => b.likeCount - a.likeCount);
+  }
+  return mapped;
 }
 
 async function getAnalytics(auth, startDate, endDate, metrics, dimensions) {
@@ -910,7 +940,12 @@ process.on("unhandledRejection", (reason) => {
   console.error("[YouTube MCP] Unhandled rejection (process kept alive):", reason);
 });
 
-// ─── Start ────────────────────────────────────────────────────────────────────
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.error("YouTube MCP Server v2.3.0 running — analytics + video metadata ready...");
+// ─── Start (only when executed directly as CLI / MCP server) ─────────────────
+const isDirectRun =
+  Boolean(process.argv[1]) &&
+  fs.realpathSync(process.argv[1]) === fs.realpathSync(fileURLToPath(import.meta.url));
+if (isDirectRun) {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("YouTube MCP Server v2.3.0 running — analytics + video metadata ready...");
+}
